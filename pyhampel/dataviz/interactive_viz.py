@@ -55,7 +55,7 @@ def hampel_interactive(df_list: list, key_col, orig_col: str, filtered_col: str,
 
     # Define FigureWidget that will contain traces
     g = go.FigureWidget(data=[trace1, trace2, trace3],
-                        layout=go.Layout(title=dict(text="Usage for " + str(df_list[0][key_col].unique()[0])), ))
+                        layout=go.Layout(template='plotly_white', title=dict(text="Usage for " + str(df_list[0][key_col].unique()[0])), ))
 
     # Define Handler Function
     # noinspection PyTypeChecker,PyUnusedLocal
