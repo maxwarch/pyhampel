@@ -31,7 +31,8 @@ def hampel_interactive(df_list: list, key_col, orig_col: str, filtered_col: str,
     """
 
     # Define widgets
-    list_idx = widgets.IntSlider(value=1.0, min=1.0, max=len(df_list) - 1, step=1.0, description='List IDX:',
+    max = len(df_list) - 1 if len(df_list) > 1 else 1
+    list_idx = widgets.IntSlider(value=1.0, min=1.0, max=max, step=1.0, description='List IDX:',
                                  continuous_update=False)
     recalc_outlier = widgets.Checkbox(description='Recalc Outlier?: ', value=False, )
     center_window = widgets.Checkbox(description='Center Window?: ', value=True, )
@@ -59,10 +60,10 @@ def hampel_interactive(df_list: list, key_col, orig_col: str, filtered_col: str,
     # Define Handler Function
     # noinspection PyTypeChecker,PyUnusedLocal
     def response(change):
-
+        index = list_idx.value - 1
         if recalc_outlier.value:
             # noinspection PyTypeChecker
-            temp_df = df_list[list_idx.value][[key_col, orig_col]]
+            temp_df = df_list[index][[orig_col]]
             new_df = hampel_filter_df(temp_df, vals_col=orig_col, time_col=None,
                                       win_size=window_size.value,
                                       num_dev=dev_size.value,
@@ -75,19 +76,19 @@ def hampel_interactive(df_list: list, key_col, orig_col: str, filtered_col: str,
                 g.data[1].y = new_df[filtered_col]
                 g.data[2].x = new_df.index
                 g.data[2].y = new_df[outlier_col]
-                g.layout.title = "Usage for " + str(df_list[list_idx.value][key_col].unique()[0])
+                g.layout.title = "Usage for " + str(df_list[index][key_col].unique()[0])
                 g.layout.xaxis.title = 'Date'
                 g.layout.yaxis.title = 'Usage'
 
         else:
             with g.batch_update():
-                g.data[0].x = df_list[list_idx.value].index
-                g.data[0].y = df_list[list_idx.value][orig_col]
-                g.data[1].x = df_list[list_idx.value].index
-                g.data[1].y = df_list[list_idx.value][filtered_col]
-                g.data[2].x = df_list[list_idx.value].index
-                g.data[2].y = df_list[list_idx.value][outlier_col]
-                g.layout.title = "Usage for " + str(df_list[list_idx.value][key_col].unique()[0])
+                g.data[0].x = df_list[index].index
+                g.data[0].y = df_list[index][orig_col]
+                g.data[1].x = df_list[index].index
+                g.data[1].y = df_list[index][filtered_col]
+                g.data[2].x = df_list[index].index
+                g.data[2].y = df_list[index][outlier_col]
+                g.layout.title = "Usage for " + str(df_list[index][key_col].unique()[0])
                 g.layout.xaxis.title = 'Date'
                 g.layout.yaxis.title = 'Usage'
 
@@ -134,7 +135,8 @@ def hampel_interactive_with_dev(df_list: list, key_col, orig_col: str, filtered_
     """
 
     # Define widgets
-    list_idx = widgets.IntSlider(value=1.0, min=1.0, max=len(df_list) - 1, step=1.0, description='List IDX:',
+    max = len(df_list) - 1 if len(df_list) > 1 else 1
+    list_idx = widgets.IntSlider(value=1.0, min=1.0, max=max, step=1.0, description='List IDX:',
                                  continuous_update=False)
     recalc_outlier = widgets.Checkbox(description='Recalc Outlier?: ', value=False, )
     center_window = widgets.Checkbox(description='Center Window?: ', value=True, )
@@ -168,10 +170,10 @@ def hampel_interactive_with_dev(df_list: list, key_col, orig_col: str, filtered_
     # Define Handler Function
     # noinspection PyTypeChecker,PyUnusedLocal
     def response(change):
-
+        index = list_idx.value - 1
         if recalc_outlier.value:
             # noinspection PyTypeChecker
-            temp_df = df_list[list_idx.value][[key_col, orig_col]]
+            temp_df = df_list[index][[key_col, orig_col]]
             new_df = hampel_filter_with_dev_df(temp_df, vals_col=orig_col, time_col=None,
                                                win_size=window_size.value,
                                                num_dev=dev_size.value,
@@ -188,25 +190,25 @@ def hampel_interactive_with_dev(df_list: list, key_col, orig_col: str, filtered_
                 g.data[3].y = new_df[lower_dev_col]
                 g.data[4].x = new_df.index
                 g.data[4].y = new_df[upper_dev_col]
-                g.layout.title = "Usage for " + str(df_list[list_idx.value][key_col].unique()[0])
+                g.layout.title = "Usage for " + str(df_list[index][key_col].unique()[0])
                 g.layout.xaxis.title = 'Date'
                 g.layout.yaxis.title = 'Usage'
 
         else:
             with g.batch_update():
-                g.data[0].x = df_list[list_idx.value].index
-                g.data[0].y = df_list[list_idx.value][orig_col]
-                g.data[1].x = df_list[list_idx.value].index
-                g.data[1].y = df_list[list_idx.value][filtered_col]
-                g.data[2].x = df_list[list_idx.value].index
-                g.data[2].y = df_list[list_idx.value][outlier_col]
+                g.data[0].x = df_list[index].index
+                g.data[0].y = df_list[index][orig_col]
+                g.data[1].x = df_list[index].index
+                g.data[1].y = df_list[index][filtered_col]
+                g.data[2].x = df_list[index].index
+                g.data[2].y = df_list[index][outlier_col]
 
-                g.data[3].x = df_list[list_idx.value].index
-                g.data[3].y = df_list[list_idx.value][lower_dev_col]
-                g.data[4].x = df_list[list_idx.value].index
-                g.data[4].y = df_list[list_idx.value][upper_dev_col]
+                g.data[3].x = df_list[index].index
+                g.data[3].y = df_list[index][lower_dev_col]
+                g.data[4].x = df_list[index].index
+                g.data[4].y = df_list[index][upper_dev_col]
 
-                g.layout.title = "Usage for " + str(df_list[list_idx.value][key_col].unique()[0])
+                g.layout.title = "Usage for " + str(df_list[index][key_col].unique()[0])
                 g.layout.xaxis.title = 'Date'
                 g.layout.yaxis.title = 'Usage'
 
